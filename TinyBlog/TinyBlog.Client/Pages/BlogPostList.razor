@@ -1,0 +1,42 @@
+﻿@page "/bloglist"
+@* @attribute [StreamRendering] *@
+@* @rendermode InteractiveServer *@
+@rendermode @(new InteractiveServerRenderMode(prerender:false))
+@using Microsoft.EntityFrameworkCore
+@using TinyBlog.Models
+@inject DataContext Context
+
+<PageTitle>Blog</PageTitle>
+<h3>Blog List</h3>
+<a href="/create-article">Create Article</a>
+<hr />
+@if(blogPosts.Count == 0)
+{
+    <p><em>Loading....</em></p>
+}
+else
+{
+
+@foreach(var post in blogPosts)
+{
+    <div>
+        <p><b>@post.Title</b> </p>
+        <p>@post.PublishedDate  </p>
+        <p>@post.Content </p>
+        <a href="/article/@post.Id">Read More... </a>
+        <hr />
+    </div>
+}
+}
+
+
+@code {
+    List<BlogPost> blogPosts = new List<BlogPost>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Delay(1000);
+        blogPosts = await Context.BlogPosts.ToListAsync();
+    }
+
+}

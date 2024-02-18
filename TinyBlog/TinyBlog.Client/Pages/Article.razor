@@ -1,0 +1,39 @@
+﻿@page "/article/{id:int}"
+@attribute [StreamRendering]
+@using Microsoft.EntityFrameworkCore
+@using TinyBlog.Models
+@inject DataContext Context
+
+
+<hr />
+@if (post is null)
+{
+    <p><em>Loading....</em></p>
+}
+else
+{
+    <PageTitle>@post.Title</PageTitle>
+    <h3><b>@post.Title</b></h3>
+    <a href="/edit-article/@post.Id">Edit Article</a>
+        <div>
+            <p>@post.PublishedDate  </p>
+            <p>@post.Content </p>
+            <hr />
+        </div>
+}
+
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    BlogPost? post = null;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var blogPost = await Context.BlogPosts.FindAsync(Id);
+        if(blogPost is not null)
+        {
+            post = blogPost;
+        }
+    }
+}
